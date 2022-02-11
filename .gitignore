@@ -4,3 +4,5 @@ build/
 __pycache__/
 git_trojan.spec
 git_trojan.exe
+datareader.py
+data/unpacked
